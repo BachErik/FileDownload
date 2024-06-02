@@ -7,6 +7,9 @@ on:
   pull_request:
     branches:
       - main
+  release:
+    types:
+      - created
 
 jobs:
   build-and-push:
@@ -31,7 +34,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: |
-          bacherik/port2244:${{ github.event_name == 'pull_request' && 'pr-' || 'latest' }}${{ github.event.pull_request.number }}
+          bacherik/port2244:${{ github.event_name == 'push' && 'latest' || github.event_name == 'release' && github.event.release.tag_name || 'pr-' }}${{ github.event.pull_request.number || '' }}
 
     - name: Logout from DockerHub
       run: docker logout
